@@ -6,6 +6,7 @@ import Title from "../components/Title";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { resetPassword } from "../firebase";
+import Background from "../components/Background";
 
 type Props = {};
 
@@ -25,17 +26,7 @@ const ForgotPassword = (props: Props) => {
 
   return (
     <View style={styles.login}>
-      <LinearGradient
-        colors={["#505050", "#00D1FF"]}
-        start={{ x: 0, y: 0.65 }}
-        end={{ x: 1, y: 0.45 }}
-        locations={[0.5, 0.5]}
-        style={styles.background}
-      ></LinearGradient>
-      <LinearGradient
-        colors={["#000000", "rgba(0, 0, 0, 0.9)", "#3E3C3C"]}
-        style={styles.background}
-      ></LinearGradient>
+      <Background />
       <View style={styles.content}>
         <View style={styles.title}>
           <Title />
@@ -76,11 +67,6 @@ const ForgotPassword = (props: Props) => {
 export default ForgotPassword;
 
 const styles = StyleSheet.create({
-  background: {
-    position: "absolute",
-    height: "100%",
-    width: "100%",
-  },
   login: {
     flex: 1,
     width: "100%",

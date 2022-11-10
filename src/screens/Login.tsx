@@ -7,6 +7,7 @@ import { login } from "../firebase";
 import { useNavigation } from "@react-navigation/native";
 import StyledTextInput from "../components/StyledTextInput";
 import StyledButton from "../components/StyledButton";
+import Background from "../components/Background";
 
 type Props = {};
 
@@ -36,19 +37,7 @@ const Login = (props: Props) => {
 
   return (
     <View style={styles.login}>
-      {/* Background */}
-      <LinearGradient
-        colors={["#505050", "#00D1FF"]}
-        start={{ x: 0, y: 0.65 }}
-        end={{ x: 1, y: 0.45 }}
-        locations={[0.5, 0.5]}
-        style={styles.background}
-      ></LinearGradient>
-      <LinearGradient
-        colors={["#000000", "rgba(0, 0, 0, 0.9)", "#3E3C3C"]}
-        style={styles.background}
-      ></LinearGradient>
-
+      <Background />
       {/* Content */}
       <View style={styles.content}>
         {/* Title */}
@@ -110,11 +99,6 @@ const Login = (props: Props) => {
 export default Login;
 
 const styles = StyleSheet.create({
-  background: {
-    position: "absolute",
-    height: "100%",
-    width: "100%",
-  },
   login: {
     flex: 1,
     width: "100%",

@@ -1,13 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { userSignout } from "../firebase";
+import Background from "../components/Background";
 
 type Props = {};
 
-const Home = (props: Props) => {
+const Calendar = (props: Props) => {
   return (
-    <View style={styles.home}>
-      <Text>Home</Text>
+    <View style={styles.container}>
+      <Background />
+      <Text>Calendar</Text>
       <TouchableOpacity onPress={userSignout}>
         <Text>Logout</Text>
       </TouchableOpacity>
@@ -15,10 +17,10 @@ const Home = (props: Props) => {
   );
 };
 
-export default Home;
+export default Calendar;
 
 const styles = StyleSheet.create({
-  home: {
+  container: {
     flex: 1,
     width: "100%",
     display: "flex",

@@ -21,7 +21,9 @@ export type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
   ForgotPassword: undefined;
-  Home: undefined;
+  Calendar: undefined;
+  Dashboard: undefined;
+  Settings: undefined;
   Modal: undefined;
   NotFound: undefined;
 };

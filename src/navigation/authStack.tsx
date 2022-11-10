@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -7,6 +8,8 @@ import SignInScreen from "../screens/Login";
 import SignOutScreen from "../screens/Signup";
 import { RootStackParamList } from "../types";
 import ForgotPassword from "../screens/ForgotPassword";
+import Background from "../components/Background";
+import { View } from "react-native";
 
 const Stack = createStackNavigator<RootStackParamList>();
 

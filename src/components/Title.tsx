@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-type Props = {};
+type Props = {
+  title: String;
+};
 
-const Title = (props: Props) => {
+const Title = ({ title }: Props) => {
   return (
     <View>
-      <Text style={styles.title}>FT Capstone Project Title</Text>
+      <Text style={styles.title}>{title || "FT Capstone Project Title"}</Text>
     </View>
   );
 };
