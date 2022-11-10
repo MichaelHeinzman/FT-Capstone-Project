@@ -26,7 +26,7 @@ const ForgotPassword = (props: Props) => {
 
   return (
     <View style={styles.login}>
-      <Background />
+      <Background auth />
       <View style={styles.content}>
         <View style={styles.title}>
           <Title />

@@ -37,7 +37,7 @@ const Login = (props: Props) => {
 
   return (
     <View style={styles.login}>
-      <Background />
+      <Background auth />
       {/* Content */}
       <View style={styles.content}>
         {/* Title */}

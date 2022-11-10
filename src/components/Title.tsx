@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
 type Props = {
-  title: String;
+  title?: String;
 };
 
 const Title = ({ title }: Props) => {

@@ -2,9 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
-type Props = {};
+type Props = {
+  auth?: boolean;
+};
 
-const Background = (props: Props) => {
+const Background = ({ auth = false }: Props) => {
   return (
     <>
       {/* Background */}
@@ -16,7 +18,11 @@ const Background = (props: Props) => {
         style={styles.background}
       ></LinearGradient>
       <LinearGradient
-        colors={["#000000", "rgba(0, 0, 0, 0.9)", "#3E3C3C"]}
+        colors={[
+          "#000000",
+          "rgba(0, 0, 0, 0.9)",
+          `${auth ? "#3E3C3C" : "rgba(0,0,0,.9)"}`,
+        ]}
         style={styles.background}
       ></LinearGradient>
     </>
