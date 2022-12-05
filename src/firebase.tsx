@@ -15,6 +15,7 @@ import {
   FIREBASE_APP_ID,
   FIREBASE_MEASUREMENT_ID,
 } from "@env";
+import { getFirestore } from "firebase/firestore";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -28,6 +29,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // Authentication Methods
 const auth = getAuth(app);
@@ -53,4 +55,4 @@ const resetPassword = (email: string) =>
     .then((res) => res)
     .catch((error) => console.log("Reset Password Email Error", error));
 
-export { auth, login, signup, userSignout, resetPassword };
+export { auth, db, login, signup, userSignout, resetPassword };

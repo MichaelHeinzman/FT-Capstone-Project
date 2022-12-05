@@ -10,18 +10,27 @@ type Props = {};
 
 const NavigationBar = (props: Props) => {
   const navigation = useNavigation();
-
   const handleNavButtonClicked = (page: any) => navigation.navigate(page);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => handleNavButtonClicked("Dashboard")}>
-        <Image style={styles.image} source={require(DASHBOARD_IMG)} />
+        <Image
+          style={styles.image}
+          source={require("../assets/images/dashboard.png")}
+        />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavButtonClicked("Calendar")}>
-        <Image style={styles.image} source={require(CALENDAR_IMG)} />
+        <Image
+          style={styles.image}
+          source={require("../assets/images/calendar.png")}
+        />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavButtonClicked("Settings")}>
-        <Image style={styles.image} source={require(SETTINGS_IMG)} />
+        <Image
+          style={styles.image}
+          source={require("../assets/images/settings.png")}
+        />
       </TouchableOpacity>
     </View>
   );

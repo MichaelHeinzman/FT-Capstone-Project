@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import Background from "../components/Background";
 import Title from "../components/Title";
+import { userSignout } from "../firebase";
 
 type Props = {};
 
@@ -10,6 +11,9 @@ const Settings = (props: Props) => {
     <View style={styles.container}>
       <Background />
       <Title title="Settings" />
+      <TouchableOpacity onPress={() => userSignout()}>
+        <Title title="LOGOUT" />
+      </TouchableOpacity>
     </View>
   );
 };
