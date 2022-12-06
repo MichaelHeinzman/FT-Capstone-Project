@@ -3,10 +3,16 @@ import React from "react";
 import Background from "../components/Background";
 import Title from "../components/Title";
 import { useGetUserEvents } from "../hooks/useGetUserEvents";
+import StyledButton from "../components/StyledButton";
+import { addEvent } from "../firebase";
 
 type Props = {};
 const Dashboard = (props: Props) => {
   const { events } = useGetUserEvents();
+
+  const event = () => {
+    addEvent({ date: "12/01/2022" });
+  };
   return (
     <View style={styles.container}>
       <Background />

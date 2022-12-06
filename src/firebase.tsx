@@ -15,7 +15,7 @@ import {
   FIREBASE_APP_ID,
   FIREBASE_MEASUREMENT_ID,
 } from "@env";
-import { getFirestore } from "firebase/firestore";
+import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -55,4 +55,9 @@ const resetPassword = (email: string) =>
     .then((res) => res)
     .catch((error) => console.log("Reset Password Email Error", error));
 
-export { auth, db, login, signup, userSignout, resetPassword };
+const addEvent = async (event: any) => {
+  const userId = auth.currentUser?.uid || "";
+  const eventsRef = collection(db, "Users", userId, "events");
+  await setDoc(doc(eventsRef), event);
+};
+export { auth, db, login, signup, userSignout, resetPassword, addEvent };
