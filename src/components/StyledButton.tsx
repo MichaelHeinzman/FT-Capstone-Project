@@ -16,7 +16,7 @@ const StyledButton = ({
 }: Props) => {
   return (
     <TouchableOpacity
-      style={[buttonStyle, styles.button]}
+      style={[styles.button, buttonStyle]}
       onPress={onPressEvent}
     >
       <Text style={[textStyle, styles.text]}>{text}</Text>

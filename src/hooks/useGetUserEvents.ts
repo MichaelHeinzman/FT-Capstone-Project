@@ -4,7 +4,7 @@ import { db } from "../firebase";
 import { auth } from "../firebase";
 
 export function useGetUserEvents() {
-  const [events, setEvents] = <any[]>useState([]);
+  const [events, setEvents] = useState<{ [key: string]: any[] }>({});
   const userId = auth.currentUser?.uid || "";
 
   useEffect(() => {
@@ -13,9 +13,19 @@ export function useGetUserEvents() {
       (querySnapshot) => {
         const result: any[] = [];
         querySnapshot.forEach((doc) => {
-          result.push(doc);
+          const temp = { id: doc.id, ...doc.data() };
+          result.push(temp);
         });
-        setEvents(result);
+
+        const reduced = result.reduce(
+          (acc: { [key: string]: any[] }, currentEvent: any) => {
+            const { date, ...coolEvent } = currentEvent;
+            acc[date] = [coolEvent];
+            return acc;
+          },
+          {}
+        );
+        setEvents(reduced);
       }
     );
     return unsubscribe;

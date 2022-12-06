@@ -20,12 +20,6 @@ const NavigationBar = (props: Props) => {
           source={require("../assets/images/dashboard.png")}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleNavButtonClicked("Calendar")}>
-        <Image
-          style={styles.image}
-          source={require("../assets/images/calendar.png")}
-        />
-      </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavButtonClicked("Settings")}>
         <Image
           style={styles.image}
@@ -43,7 +37,6 @@ const styles = StyleSheet.create({
     height: 120,
     width: "100%",
     backgroundColor: "rgba(0,0,10,1)",
-    position: "absolute",
     bottom: 0,
     padding: 10,
     paddingBottom: 30,

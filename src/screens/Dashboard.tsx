@@ -1,26 +1,72 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
 import Background from "../components/Background";
-import Title from "../components/Title";
 import { useGetUserEvents } from "../hooks/useGetUserEvents";
+import { Agenda, AgendaSchedule } from "react-native-calendars";
+import { SafeAreaView } from "react-native-safe-area-context";
 import StyledButton from "../components/StyledButton";
 import { addEvent } from "../firebase";
+import EventForm from "./EventForm";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {};
 const Dashboard = (props: Props) => {
   const { events } = useGetUserEvents();
+  const currentDate = formatDate(new Date()).toString();
+  const [current, setCurrent] = useState(currentDate);
+  const navigation = useNavigation();
 
-  const event = () => {
-    addEvent({ date: "12/01/2022" });
+  function formatDate(date: Date) {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  }
+
+  const renderEventScreen = () => navigation.navigate("EventForm");
+  const renderEmptyDate = () => {
+    return (
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemContainer}>No Events on this Day.</Text>
+      </View>
+    );
+  };
+  const renderItem = (item: any) => {
+    return (
+      <View style={styles.itemContainer}>
+        <Text>{item.name}</Text>
+        <Text>{item.cookies ? `🍪` : `😋`}</Text>
+      </View>
+    );
   };
   return (
     <View style={styles.container}>
       <Background />
-      <Title title="Dashboard" />
-      {events.map((item: any) => {
-        let data = item.data();
-        return <Title key={item.id} title={data.date} />;
-      })}
+      <View style={styles.safe}>
+        <Agenda
+          items={events}
+          renderItem={renderItem}
+          renderEmptyData={renderEmptyDate}
+          onDayChange={(day) => setCurrent(day)}
+          onDayPress={(day) => setCurrent(day.dateString)}
+          current={current}
+          disabledByDefault={true}
+          refreshing={true}
+          showClosingKnob={true}
+        />
+        <View style={styles.footer}>
+          <StyledButton
+            buttonStyle={styles.addEvent}
+            text="Add Event"
+            onPressEvent={renderEventScreen}
+          />
+        </View>
+      </View>
     </View>
   );
 };
@@ -34,8 +80,34 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    position: "relative",
+  },
+  safe: {
+    flex: 1,
+    width: "100%",
+    overflow: "hidden",
   },
   text: {
-    color: "white",
+    flex: 1,
+    width: "100%",
+    color: "#00D1FF",
+    fontSize: 20,
+    textAlign: "center",
+  },
+  itemContainer: {
+    backgroundColor: "white",
+    margin: 5,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+  footer: {
+    flex: 0.2,
+    width: "100%",
+    padding: 10,
+  },
+  addEvent: {
+    flex: 1,
   },
 });
