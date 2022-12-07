@@ -1,36 +1,39 @@
-import { doc, onSnapshot, collection } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { onSnapshot, collection, doc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { auth } from "../firebase";
 
 export function useGetUserEvents() {
-  const [events, setEvents] = useState<{ [key: string]: any[] }>({});
+  const [events, setEvents] = useState<any>({});
   const userId = auth.currentUser?.uid || "";
+
+  const setupItemsFromData = (result: any[], item: any) => {
+    if (!result[item.date]) result[item.date] = [];
+
+    result[item.date].push(item);
+
+    result[item.date].sort((a: any, b: any) => {
+      const date1 = new Date(a.alarm.time);
+      const date2 = new Date(b.alarm.time);
+      return date1.valueOf() - date2.valueOf();
+    });
+    return result;
+  };
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "Users", userId, "events"),
       (querySnapshot) => {
-        const result: any[] = [];
+        let result: any[] = [];
         querySnapshot.forEach((doc) => {
-          const temp = { id: doc.id, ...doc.data() };
-          result.push(temp);
+          const temp: any = { id: doc.id, ...doc.data() };
+          result = setupItemsFromData(result, temp);
         });
-
-        const reduced = result.reduce(
-          (acc: { [key: string]: any[] }, currentEvent: any) => {
-            const { date, ...coolEvent } = currentEvent;
-            acc[date] = [coolEvent];
-            return acc;
-          },
-          {}
-        );
-        setEvents(reduced);
+        setEvents({ ...result });
       }
     );
     return unsubscribe;
   }, []);
-
   return {
     events,
   };

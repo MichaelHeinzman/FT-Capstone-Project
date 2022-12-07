@@ -15,7 +15,13 @@ import {
   FIREBASE_APP_ID,
   FIREBASE_MEASUREMENT_ID,
 } from "@env";
-import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getFirestore,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -60,4 +66,19 @@ const addEvent = async (event: any) => {
   const eventsRef = collection(db, "Users", userId, "events");
   await setDoc(doc(eventsRef), event);
 };
-export { auth, db, login, signup, userSignout, resetPassword, addEvent };
+
+const updateEvent = async (event: any, id: any) => {
+  const userId = auth.currentUser?.uid || "";
+  const eventsRef = collection(db, "Users", userId, "events");
+  await updateDoc(doc(eventsRef, id), event);
+};
+export {
+  auth,
+  db,
+  login,
+  signup,
+  userSignout,
+  resetPassword,
+  addEvent,
+  updateEvent,
+};
