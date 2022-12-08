@@ -4,9 +4,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { RootStackParamList } from "../types";
 import NavigationBar from "./NavigationBar";
-import Dashboard from "../screens/Dashboard";
+import Dashboard from "../screens/Dashboard/Dashboard";
 import Settings from "../screens/Settings";
-import EventForm from "../screens/EventForm";
+import EventForm from "../screens/EventForm/EventForm";
 
 const Stack = createStackNavigator<RootStackParamList>();
 

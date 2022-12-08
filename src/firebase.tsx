@@ -17,7 +17,9 @@ import {
 } from "@env";
 import {
   collection,
+  deleteDoc,
   doc,
+  getDoc,
   getFirestore,
   setDoc,
   updateDoc,
@@ -61,9 +63,48 @@ const resetPassword = (email: string) =>
     .then((res) => res)
     .catch((error) => console.log("Reset Password Email Error", error));
 
+const updateSubject = async (event: any, typeOfUpdate: string) => {
+  const userId = auth.currentUser?.uid || "";
+  let subject: any = await getSubject(event.subject);
+  // Check to see if subject exists. If not create one and post in firebase.
+  if (subject) {
+    if (!subject.events[event.type]) {
+      subject.events[event.type] = {
+        averageTimeTook: event.actualTimeTook,
+      };
+    } else {
+      if (typeOfUpdate === "deletion") {
+        subject.events[event.type].AverageTimeTook =
+          subject.events[event.type].AverageTimeTook * 2 - event.actualTimeTook;
+      } else {
+        subject.events[event.type].AverageTimeTook =
+          (subject.events[event.type].AverageTimeTook + event.actualTimeTook) /
+          2;
+      }
+    }
+  } else {
+    subject = {
+      events: {
+        [event.type]: {
+          averageTimeTook: event.actualTimeTook,
+        },
+      },
+    };
+  }
+  await setDoc(doc(db, "Users", userId, "subjects", event.subject), subject);
+};
+
+const getSubject = async (subject: string) => {
+  const userId = auth.currentUser?.uid || "";
+  const subjectRef: any = doc(db, "Users", userId, "subjects", subject);
+  const docSnap = await getDoc(subjectRef);
+  return docSnap.data();
+};
+
 const addEvent = async (event: any) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
+  updateSubject(event, "");
   await setDoc(doc(eventsRef), event);
 };
 
@@ -71,6 +112,14 @@ const updateEvent = async (event: any, id: any) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
   await updateDoc(doc(eventsRef, id), event);
+};
+
+const deleteEvent = async (event: any, id: any) => {
+  const userId = auth.currentUser?.uid || "";
+  const eventsRef = collection(db, "Users", userId, "events");
+
+  await deleteDoc(doc(eventsRef, id));
+  updateSubject(event, "deletion");
 };
 export {
   auth,
@@ -81,4 +130,5 @@ export {
   resetPassword,
   addEvent,
   updateEvent,
+  getSubject,
 };

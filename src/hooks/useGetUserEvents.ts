@@ -1,6 +1,6 @@
 import { onSnapshot, collection, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db, getSubject } from "../firebase";
 import { auth } from "../firebase";
 
 export function useGetUserEvents() {
@@ -9,12 +9,10 @@ export function useGetUserEvents() {
 
   const setupItemsFromData = (result: any[], item: any) => {
     if (!result[item.date]) result[item.date] = [];
-
     result[item.date].push(item);
-
     result[item.date].sort((a: any, b: any) => {
-      const date1 = new Date(a.alarm.time);
-      const date2 = new Date(b.alarm.time);
+      const date1 = new Date(a.start);
+      const date2 = new Date(b.start);
       return date1.valueOf() - date2.valueOf();
     });
     return result;
