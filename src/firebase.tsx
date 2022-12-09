@@ -100,6 +100,13 @@ const getSubject = async (subject: string) => {
   const docSnap = await getDoc(subjectRef);
   return docSnap.data();
 };
+const addSubject = async (subject: any) => {
+  const userId = auth.currentUser?.uid || "";
+  await setDoc(
+    doc(db, "Users", userId, "subjects", subject?.id || subject.name),
+    subject
+  );
+};
 
 const addEvent = async (event: any) => {
   const userId = auth.currentUser?.uid || "";
@@ -131,4 +138,5 @@ export {
   addEvent,
   updateEvent,
   getSubject,
+  addSubject,
 };

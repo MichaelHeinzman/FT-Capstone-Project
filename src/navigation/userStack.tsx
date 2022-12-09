@@ -7,6 +7,7 @@ import NavigationBar from "./NavigationBar";
 import Dashboard from "../screens/Dashboard/Dashboard";
 import Settings from "../screens/Settings";
 import EventForm from "../screens/EventForm/EventForm";
+import EventView from "../screens/EventView/EventView";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -27,6 +28,11 @@ export default function UserStack() {
         <Stack.Screen
           name="EventForm"
           component={EventForm}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EventView"
+          component={EventView}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

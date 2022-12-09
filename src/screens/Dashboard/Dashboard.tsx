@@ -4,6 +4,7 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -13,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Background from "../../components/Background";
 import { useGetUserEvents } from "../../hooks/useGetUserEvents";
 import Event from "./Components/Event";
+import Events from "./Components/Events";
 
 type Props = {
   navigation: any;
@@ -26,9 +28,7 @@ const Dashboard = ({ navigation }: Props) => {
     },
   ];
   const [currentDate, setCurrentDate] = useState<any>(
-    `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format(
-      "DD"
-    )}`
+    moment().format("YYYY-MM-DD").toString()
   );
 
   const { events } = useGetUserEvents();
@@ -53,6 +53,7 @@ const Dashboard = ({ navigation }: Props) => {
     });
     setMarkedDate(mappedEvents);
   }, [events, currentDate]);
+
   return (
     <Fragment>
       <Background />
@@ -115,14 +116,12 @@ const Dashboard = ({ navigation }: Props) => {
         </TouchableOpacity>
 
         {/* Load Events */}
-        <View style={styles.eventsContainer}>
-          <ScrollView contentContainerStyle={styles.scrollViewEventsContainer}>
-            {dayList.map((event: any) => {
-              return (
-                <Event key={event.id} event={event} navigation={navigation} />
-              );
-            })}
-          </ScrollView>
+        <View style={styles.events}>
+          <Events
+            dayList={dayList}
+            navigation={navigation}
+            currentDay={currentDate}
+          />
         </View>
       </SafeAreaView>
     </Fragment>
@@ -138,13 +137,7 @@ const styles = StyleSheet.create({
   calendar: {
     flex: 0.3,
   },
-  eventsContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  scrollViewEventsContainer: {
-    paddingBottom: 10,
-  },
+
   viewTask: {
     position: "absolute",
     bottom: 40,
@@ -164,5 +157,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     elevation: 5,
     zIndex: 999,
+  },
+  events: {
+    flex: 1,
   },
 });

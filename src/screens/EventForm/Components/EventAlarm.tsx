@@ -37,7 +37,7 @@ const EventAlarm = ({
     setAlarmSet(!isAlarmSet);
   };
   return (
-    <View>
+    <View style={styles.container}>
       <DateTimePicker
         isVisible={isDateTimePickerVisible}
         onConfirm={handleDatePicked}
@@ -46,38 +46,8 @@ const EventAlarm = ({
         date={new Date()}
         isDarkModeEnabled
       />
-      <View>
-        <Text
-          style={{
-            color: "#9CAAC4",
-            fontSize: 16,
-            fontWeight: "600",
-          }}
-        >
-          Alarm Times
-        </Text>
-        <TouchableOpacity
-          onPress={() => showDateTimePicker()}
-          style={{
-            height: 25,
-            marginTop: 3,
-          }}
-        >
-          <Text style={{ fontSize: 19 }}>
-            {moment(alarmTime).format("h:mm A")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.separator} />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <View>
+      <View style={styles.content}>
+        <View style={styles.row}>
           <Text
             style={{
               color: "#9CAAC4",
@@ -85,9 +55,10 @@ const EventAlarm = ({
               fontWeight: "600",
             }}
           >
-            Alarm
+            Alarm Times
           </Text>
-          <View
+          <TouchableOpacity
+            onPress={() => showDateTimePicker()}
             style={{
               height: 25,
               marginTop: 3,
@@ -96,9 +67,26 @@ const EventAlarm = ({
             <Text style={{ fontSize: 19 }}>
               {moment(alarmTime).format("h:mm A")}
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
-        <Switch value={isAlarmSet} onValueChange={handleAlarmSet} />
+
+        <View style={styles.separator} />
+        <View style={styles.row}>
+          <View>
+            <Text style={styles.text}>Alarm</Text>
+            <View
+              style={{
+                height: 25,
+                marginTop: 3,
+              }}
+            >
+              <Text style={styles.timeText}>
+                {moment(alarmTime).format("h:mm A")}
+              </Text>
+            </View>
+          </View>
+          <Switch value={isAlarmSet} onValueChange={handleAlarmSet} />
+        </View>
       </View>
     </View>
   );
@@ -107,11 +95,41 @@ const EventAlarm = ({
 export default EventAlarm;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    display: "flex",
+    borderRadius: 10,
+  },
+  content: {
+    flex: 1,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  row: {
+    flex: 0.2,
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   separator: {
     height: 0.5,
     width: "100%",
     backgroundColor: "#979797",
     alignSelf: "center",
     marginVertical: 20,
+  },
+  timeText: {
+    color: "aqua",
+    fontSize: 20,
+    textAlign: "center",
+  },
+  text: {
+    color: "white",
+    fontSize: 18,
   },
 });

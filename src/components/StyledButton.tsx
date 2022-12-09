@@ -19,7 +19,7 @@ const StyledButton = ({
       style={[styles.button, buttonStyle]}
       onPress={onPressEvent}
     >
-      <Text style={[textStyle, styles.text]}>{text}</Text>
+      <Text style={[styles.text, textStyle]}>{text}</Text>
     </TouchableOpacity>
   );
 };
