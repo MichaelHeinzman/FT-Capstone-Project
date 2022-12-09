@@ -8,12 +8,12 @@ import {
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import Title from "../components/Title";
-import { signup } from "../firebase";
+import Title from "../../components/Title";
+import { signup } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
-import StyledButton from "../components/StyledButton";
-import StyledTextInput from "../components/StyledTextInput";
-import Background from "../components/Background";
+import StyledButton from "../../components/StyledButton";
+import StyledTextInput from "../../components/StyledTextInput";
+import Background from "../../components/Background";
 
 type Props = {};
 

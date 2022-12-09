@@ -4,14 +4,12 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 
 type Props = {
-  setDates: React.Dispatch<any>;
-  dates: any;
+  setRecurring: React.Dispatch<any>;
+  recurring: any;
 };
 
-const EventScheduleDate = ({ setDates, dates }: Props) => {
-  const [startDate, setStartDate] = useState<string>(dates?.start);
-  const [endDate, setEndDate] = useState<string>(dates?.end);
-  const [typeOfDate, setTypeOfDate] = useState(0);
+const EventScheduleRecurring = ({ setRecurring, recurring }: Props) => {
+  const [endDate, setEndDate] = useState<string>(recurring?.end);
   const [isDateTimePickerVisible, setIsDateTimePicker] = useState(false);
 
   const handleDatePicked = (date: any) => {
@@ -20,20 +18,14 @@ const EventScheduleDate = ({ setDates, dates }: Props) => {
     const day = moment(date).day();
     const newModifiedDate = moment().year(year).month(month).day(day);
 
-    typeOfDate === 0
-      ? setStartDate(newModifiedDate.toString())
-      : setEndDate(newModifiedDate.toString());
+    setEndDate(newModifiedDate.toString());
     hideDateTimePicker();
   };
   const hideDateTimePicker = () => setIsDateTimePicker(false);
-  const showDateTimePicker = (type: number) => {
-    setTypeOfDate(type);
-    setIsDateTimePicker(true);
-  };
-
+  const showDateTimePicker = (type: number) => setIsDateTimePicker(true);
   useEffect(
-    () => setDates({ start: startDate, end: endDate }),
-    [startDate, endDate]
+    () => setRecurring({ every: "Week", end: endDate, frequency: "never" }),
+    [endDate]
   );
   return (
     <View style={styles.container}>
@@ -46,24 +38,13 @@ const EventScheduleDate = ({ setDates, dates }: Props) => {
         isDarkModeEnabled
       />
       <View style={styles.content}>
-        <Text style={styles.text}>Start Date</Text>
-        <TouchableOpacity
-          onPress={() => showDateTimePicker(0)}
-          style={styles.timeButton}
-        >
-          <Text style={styles.timeText}>
-            {moment(startDate).format("MM DD YYYY")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.content}>
-        <Text style={styles.text}>End Date</Text>
+        <Text style={styles.text}>Recurring</Text>
         <TouchableOpacity
           onPress={() => showDateTimePicker(1)}
           style={styles.timeButton}
         >
           <Text style={styles.timeText}>
-            {moment(endDate).format("MM DD YYYY")}
+            {moment(endDate).format("MM-DD-YYYY")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -71,7 +52,7 @@ const EventScheduleDate = ({ setDates, dates }: Props) => {
   );
 };
 
-export default EventScheduleDate;
+export default EventScheduleRecurring;
 
 const styles = StyleSheet.create({
   container: {

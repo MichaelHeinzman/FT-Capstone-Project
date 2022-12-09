@@ -43,3 +43,16 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
     BottomTabScreenProps<RootTabParamList, Screen>,
     NativeStackScreenProps<RootStackParamList>
   >;
+
+export type Event = {
+  id?: string;
+  title: string;
+  description: string;
+  subject: string;
+  type: string;
+  recurring: { frequency: string; every: string; end: string };
+  color: string;
+  dates: { start: string };
+  times: { start: string; end: string; timeExpectedToSpend: number };
+  alarm: { time: string; isOn: boolean };
+};

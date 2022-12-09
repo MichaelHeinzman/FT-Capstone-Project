@@ -5,46 +5,38 @@ import StyledButton from "../../../components/StyledButton";
 import StyledTextInput from "../../../components/StyledTextInput";
 import { addSubject } from "../../../firebase";
 import { useGetUserSubjects } from "../../../hooks/useGetUserSubjects";
+import { useGetTypesFromSubject } from "../../../hooks/useGetTypesFromSubject";
 type Props = {
   setType: React.Dispatch<any>;
-  subject: string;
+  subject: any;
 };
 
 const EventTypes = ({ setType, subject }: Props) => {
-  const { subjects } = useGetUserSubjects();
-  const [items, setItems] = useState<any>([]);
+  const { types } = useGetTypesFromSubject(subject?.events);
+  const [items, setItems] = useState<any[]>(types);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<any>(null);
   const [type, setNewType] = useState("");
-
-  useEffect(() => {
-    const events = subjects[subject]?.events || {};
-    const mappedTypes: any = [];
-    Object.keys(events).forEach((key: string) => {
-      if (events[key] === type) setValue(key);
-      mappedTypes.push({
-        label: key,
-        value: key,
-      });
-    });
-
-    setItems(mappedTypes);
-  }, []);
 
   useEffect(() => {
     if (value) setType(value);
   }, [value]);
 
   const handleAddANewSubject = () => {
-    const temp = { ...subjects[subject] };
-    temp.events = { ...temp.events, [type]: { averageTimeTook: 0 } };
-    addSubject(temp);
+    const temp = { ...subject.events, [type]: { averageTimeTook: 0 } };
+    addSubject({ ...subject, events: temp });
     setValue(type);
   };
+
+  useEffect(() => {
+    setItems(types);
+  }, [types]);
+
   return (
     <View style={styles.container}>
       <DropDownPicker
         searchable
+        itemSeparator
         open={open}
         value={value}
         items={items}
@@ -54,7 +46,9 @@ const EventTypes = ({ setType, subject }: Props) => {
         setItems={setItems}
         style={styles.dropDown}
         listMode="SCROLLVIEW"
-        placeholder="Select a Type"
+        placeholder="Select a Subject Type"
+        zIndex={3000}
+        zIndexInverse={1000}
       />
       <View style={styles.input}>
         <StyledTextInput

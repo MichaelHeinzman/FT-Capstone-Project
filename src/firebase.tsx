@@ -24,6 +24,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import { Event } from "./types";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -105,23 +106,29 @@ const addSubject = async (subject: any) => {
   await setDoc(
     doc(db, "Users", userId, "subjects", subject?.id || subject.name),
     subject
-  );
+  )
+    .then((result) => console.log("Adding Subject", result))
+    .catch((error) => console.log("Error Adding Subject", error));
 };
 
-const addEvent = async (event: any) => {
+const addEvent = async (event: Event) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
   updateSubject(event, "");
-  await setDoc(doc(eventsRef), event);
+  await setDoc(doc(eventsRef), event)
+    .then((result) => console.log("Adding Event"))
+    .catch((error) => console.log("Error Adding Event", error));
 };
 
-const updateEvent = async (event: any, id: any) => {
+const updateEvent = async (event: Event, id: string | undefined) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
-  await updateDoc(doc(eventsRef, id), event);
+  await updateDoc(doc(eventsRef, id), event)
+    .then((result) => console.log("Updated Event"))
+    .catch((error) => console.log("Error Updating Event", error));
 };
 
-const deleteEvent = async (event: any, id: any) => {
+const deleteEvent = async (event: Event, id: string) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
 

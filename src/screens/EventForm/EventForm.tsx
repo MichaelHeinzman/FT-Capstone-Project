@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,36 +16,25 @@ import EventTypes from "./Components/EventType";
 import Title from "../../components/Title";
 import EventScheduleDate from "./Components/EventScheduleDate";
 import EventAlarm from "./Components/EventAlarm";
+import { Event } from "../../types";
+import { useGetUserSubjects } from "../../hooks/useGetUserSubjects";
+import EventScheduleRecurring from "./Components/EventScheduleRecurring";
 type Props = {
   navigation: any;
-  route: any;
+  route: { params: { currentDayPassed: any; eventToUpdate: Event } };
 };
 
-const NewDashboard = ({ navigation, route }: Props) => {
+const EventForm = ({ navigation, route }: Props) => {
   const { currentDayPassed, eventToUpdate } = route.params;
-  const [dates, setDates] = useState(
-    eventToUpdate?.dates || {
-      start: currentDayPassed,
-      end: "",
-    }
-  );
-  const [times, setTimes] = useState(
-    eventToUpdate?.times || {
-      start: "",
-      end: "",
-      timeExpectedToSpend: 0,
-    }
-  );
-  const [subject, setSubject] = useState("SWE5110");
-  const [type, setType] = useState("assignment");
-  const [taskTitle, setTaskTitle] = useState(eventToUpdate?.title || "");
-  const [description, setDescription] = useState(eventToUpdate?.notes || "");
-  const [isAlarmSet, setAlarmSet] = useState(
-    eventToUpdate?.alarm.isOn || false
-  );
-  const [alarmTime, setAlarmTime] = useState<any>(
-    eventToUpdate?.alarm?.time || moment().format()
-  );
+  const [dates, setDates] = useState(eventToUpdate?.dates);
+  const [recurring, setRecurring] = useState(eventToUpdate?.recurring);
+  const [times, setTimes] = useState(eventToUpdate?.times);
+  const [subject, setSubject] = useState<any>();
+  const [type, setType] = useState(eventToUpdate?.type);
+  const [taskTitle, setTaskTitle] = useState(eventToUpdate?.title);
+  const [description, setDescription] = useState(eventToUpdate?.description);
+  const [isAlarmSet, setAlarmSet] = useState(eventToUpdate?.alarm.isOn);
+  const [alarmTime, setAlarmTime] = useState<any>(eventToUpdate?.alarm?.time);
   const handleAddTask = () => {
     const color = `rgb(${Math.floor(
       Math.random() * Math.floor(256)
@@ -55,17 +43,16 @@ const NewDashboard = ({ navigation, route }: Props) => {
     )})`;
 
     const startDate = moment(dates.start).format("YYYY-MM-DD");
-    const endDate = moment(dates.start).format("YYYY-MM-DD");
 
-    const newEvent = {
+    const newEvent: Event = {
       title: taskTitle,
-      description: description,
-      subject: subject,
-      type: type,
+      description: description || "",
+      subject: eventToUpdate?.subject || subject?.name || "",
+      type: type || "",
       color: color,
+      recurring: recurring,
       dates: {
         start: startDate,
-        end: endDate,
       },
       times: {
         start: times.start,
@@ -73,13 +60,13 @@ const NewDashboard = ({ navigation, route }: Props) => {
         timeExpectedToSpend: times.timeExpectedToSpend,
       },
       alarm: {
-        time: alarmTime,
-        isOn: isAlarmSet,
+        time: alarmTime || "",
+        isOn: isAlarmSet || false,
       },
     };
 
     addEvent(newEvent);
-    navigation.navigate("EventView");
+    navigation.navigate("Dashboard");
   };
 
   const handleUpdateEvent = () => {
@@ -90,16 +77,15 @@ const NewDashboard = ({ navigation, route }: Props) => {
     )})`;
 
     const startDate = moment(dates.start).format("YYYY-MM-DD");
-    const endDate = moment(dates.start).format("YYYY-MM-DD");
-    const newEvent = {
+    const newEvent: Event = {
       title: taskTitle,
       description: description,
       subject: subject,
       type: type,
       color: color,
+      recurring: { frequency: "never", every: "never", end: "never" },
       dates: {
         start: startDate,
-        end: endDate,
       },
       times: {
         start: times.start,
@@ -118,6 +104,7 @@ const NewDashboard = ({ navigation, route }: Props) => {
       eventToUpdate: newEvent,
     });
   };
+
   return (
     <View style={styles.container}>
       <Background />
@@ -125,12 +112,14 @@ const NewDashboard = ({ navigation, route }: Props) => {
       <View style={styles.content}>
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("EventView", {
-                currentDayPassed: currentDayPassed,
-                eventToUpdate: eventToUpdate,
-              })
-            }
+            onPress={() => {
+              eventToUpdate
+                ? navigation.navigate("EventView", {
+                    currentDayPassed: currentDayPassed,
+                    eventToUpdate: eventToUpdate,
+                  })
+                : navigation.navigate("Dashboard");
+            }}
           >
             <Text style={styles.text}>Cancel</Text>
           </TouchableOpacity>
@@ -147,20 +136,24 @@ const NewDashboard = ({ navigation, route }: Props) => {
         </View>
         <ScrollView style={styles.form} centerContent>
           <EventTitle title={taskTitle} setTitle={setTaskTitle} />
-
+          {/* Description Goes Here */}
           <EventSubjects setSubject={setSubject} />
           <EventTypes setType={setType} subject={subject} />
           <EventScheduleDate setDates={setDates} dates={dates} />
           <EventScheduleTime
             setTimes={setTimes}
             times={times}
-            currentDate={dates.start}
+            currentDate={dates?.start}
+          />
+          <EventScheduleRecurring
+            setRecurring={setRecurring}
+            recurring={recurring}
           />
           <EventAlarm
             setAlarmSet={setAlarmSet}
             setAlarmTime={setAlarmTime}
             isAlarmSet={isAlarmSet}
-            currentDay={dates.start}
+            currentDay={dates?.start}
             alarmTime={alarmTime}
           />
           {/* Customize */}
@@ -170,7 +163,7 @@ const NewDashboard = ({ navigation, route }: Props) => {
   );
 };
 
-export default NewDashboard;
+export default EventForm;
 
 const styles = StyleSheet.create({
   container: {

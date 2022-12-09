@@ -5,36 +5,26 @@ import DropDownPicker from "react-native-dropdown-picker";
 import StyledButton from "../../../components/StyledButton";
 import StyledTextInput from "../../../components/StyledTextInput";
 import { addSubject } from "../../../firebase";
+import { useLinkBuilder } from "@react-navigation/native";
+import { uuidv4 } from "@firebase/util";
+import { useGetItemsFromSubjects } from "../../../hooks/useGetItemsFromSubjects";
 type Props = {
   setSubject: React.Dispatch<any>;
 };
 
 const EventSubjects = ({ setSubject }: Props) => {
-  const { subjectsArray: subjects } = useGetUserSubjects();
-  const [items, setItems] = useState<any>([]);
+  const { subjects } = useGetUserSubjects();
+  const { items, setItems } = useGetItemsFromSubjects(subjects);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<any>(null);
-  const [subject, setNewSubject] = useState("");
+  const [subject, setNewSubject] = useState<any>();
 
   useEffect(() => {
-    const mappedSubjects = subjects.map((item: any, i: number) => {
-      if (item.id === subject) setValue(item.id);
-      return {
-        label: item.id,
-        value: item.id,
-      };
-    });
-
-    setItems(mappedSubjects);
-  }, [subjects]);
-
-  useEffect(() => {
-    if (value) setSubject(value);
+    if (value) setSubject(subjects[value]);
   }, [value]);
 
   const handleAddANewSubject = () => addSubject({ events: {}, name: subject });
 
-  const renderListItem = (item: any) => {};
   return (
     <View style={styles.container}>
       <DropDownPicker

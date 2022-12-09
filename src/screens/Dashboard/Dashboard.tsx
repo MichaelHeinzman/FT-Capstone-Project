@@ -1,57 +1,39 @@
 import React, { Fragment, useEffect, useState } from "react";
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import moment from "moment";
 import CalendarStrip from "react-native-calendar-strip";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Background from "../../components/Background";
 import { useGetUserEvents } from "../../hooks/useGetUserEvents";
-import Event from "./Components/Event";
-import Events from "./Components/Events";
+import { useMarkedDates } from "../../hooks/useMarkedDates";
+import TimeRows from "./Components/TimeRows";
+
+const datesWhitelist = [
+  {
+    start: moment(),
+    end: moment().add(365, "days"), // total 4 days enabled
+  },
+];
 
 type Props = {
   navigation: any;
 };
 
 const Dashboard = ({ navigation }: Props) => {
-  const datesWhitelist = [
-    {
-      start: moment(),
-      end: moment().add(365, "days"), // total 4 days enabled
-    },
-  ];
+  const { events } = useGetUserEvents();
+  const { markedDates } = useMarkedDates(events);
+  const [dayList, setDayList] = useState([]);
   const [currentDate, setCurrentDate] = useState<any>(
     moment().format("YYYY-MM-DD").toString()
   );
 
-  const { events } = useGetUserEvents();
-  const [dayList, setDayList] = useState<any>(
-    events[currentDate.toString()] || []
-  );
-  const [markedDate, setMarkedDate] = useState<any>([]);
+  const onDateSelected = (date: any) => {
+    const selected = moment(date).format("YYYY-MM-DD").toString();
+    setCurrentDate(selected);
+  };
 
   useEffect(() => {
-    setDayList(events[currentDate.toString()] || []);
-    const mappedEvents: any[] = [];
-    Object.keys(events).forEach((key: string) => {
-      mappedEvents.push({
-        date: key,
-        dots: [
-          {
-            color: "#2E66E7",
-            selectedDotColor: "#2E66E7",
-          },
-        ],
-      });
-    });
-    setMarkedDate(mappedEvents);
+    setDayList(events[currentDate.toString()]);
   }, [events, currentDate]);
 
   return (
@@ -87,14 +69,9 @@ const Dashboard = ({ navigation }: Props) => {
           iconContainer={{ flex: 0.1 }}
           // If you get this error => undefined is not an object (evaluating 'datesList[_this.state.numVisibleDays - 1].date')
           // temp: https://github.com/BugiDev/react-native-calendar-strip/issues/303#issuecomment-864510769
-          markedDates={markedDate}
+          markedDates={markedDates}
           selectedDate={currentDate}
-          onDateSelected={(date) => {
-            const selectedDate = `${moment(date).format("YYYY")}-${moment(
-              date
-            ).format("MM")}-${moment(date).format("DD")}`;
-            setCurrentDate(selectedDate);
-          }}
+          onDateSelected={onDateSelected}
         />
 
         {/* Add Event Button */}
@@ -117,7 +94,7 @@ const Dashboard = ({ navigation }: Props) => {
 
         {/* Load Events */}
         <View style={styles.events}>
-          <Events
+          <TimeRows
             dayList={dayList}
             navigation={navigation}
             currentDay={currentDate}

@@ -4,10 +4,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 // import WelcomeScreen from "../screens/Welcome";
-import SignInScreen from "../screens/Login";
-import SignOutScreen from "../screens/Signup";
+import SignInScreen from "../screens/Authentication/Login";
+import SignOutScreen from "../screens/Authentication/Signup";
 import { RootStackParamList } from "../types";
-import ForgotPassword from "../screens/ForgotPassword";
+import ForgotPassword from "../screens/Authentication/ForgotPassword";
 import Background from "../components/Background";
 import { View } from "react-native";
 

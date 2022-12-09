@@ -2,13 +2,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useGetUserSubjects } from "../../../hooks/useGetUserSubjects";
 import moment from "moment";
+import { Event as EventType } from "../../../types";
 
 type Props = {
-  event: any;
+  event: EventType;
   navigation: any;
 };
 
-const getTime = (event: any) => {
+const getTime = (event: EventType) => {
   const start: any = moment(event.times.start).format("h:mm A");
   const end: any = moment(event.times.end).format("h:mm A");
   return (
@@ -22,7 +23,6 @@ const getTime = (event: any) => {
 
 const Event = ({ event, navigation }: Props) => {
   const { subjects } = useGetUserSubjects();
-  console.log(event);
   return (
     <TouchableOpacity
       onPress={() =>

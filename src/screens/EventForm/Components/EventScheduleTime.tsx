@@ -15,8 +15,8 @@ type Props = {
 };
 
 const EventTimes = ({ setTimes, times, currentDate }: Props) => {
-  const [startTime, setStartTime] = useState(times.start || "");
-  const [endTime, setEndTime] = useState(times.end || "");
+  const [startTime, setStartTime] = useState(times?.start);
+  const [endTime, setEndTime] = useState(times?.end);
   const [isDateTimePickerVisible, setDateTimePickerVisible] = useState(false);
   const [type, setType] = useState(true);
 

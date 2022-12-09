@@ -2,12 +2,12 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import Title from "../components/Title";
-import { login } from "../firebase";
+import Title from "../../components/Title";
+import { login } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
-import StyledTextInput from "../components/StyledTextInput";
-import StyledButton from "../components/StyledButton";
-import Background from "../components/Background";
+import StyledTextInput from "../../components/StyledTextInput";
+import StyledButton from "../../components/StyledButton";
+import Background from "../../components/Background";
 
 type Props = {};
 
