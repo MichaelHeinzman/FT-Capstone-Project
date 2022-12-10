@@ -64,43 +64,13 @@ const resetPassword = (email: string) =>
     .then((res) => res)
     .catch((error) => console.log("Reset Password Email Error", error));
 
-const updateSubject = async (event: any, typeOfUpdate: string) => {
-  const userId = auth.currentUser?.uid || "";
-  let subject: any = await getSubject(event.subject);
-  // Check to see if subject exists. If not create one and post in firebase.
-  if (subject) {
-    if (!subject.events[event.type]) {
-      subject.events[event.type] = {
-        averageTimeTook: event.actualTimeTook,
-      };
-    } else {
-      if (typeOfUpdate === "deletion") {
-        subject.events[event.type].AverageTimeTook =
-          subject.events[event.type].AverageTimeTook * 2 - event.actualTimeTook;
-      } else {
-        subject.events[event.type].AverageTimeTook =
-          (subject.events[event.type].AverageTimeTook + event.actualTimeTook) /
-          2;
-      }
-    }
-  } else {
-    subject = {
-      events: {
-        [event.type]: {
-          averageTimeTook: event.actualTimeTook,
-        },
-      },
-    };
-  }
-  await setDoc(doc(db, "Users", userId, "subjects", event.subject), subject);
-};
-
 const getSubject = async (subject: string) => {
   const userId = auth.currentUser?.uid || "";
   const subjectRef: any = doc(db, "Users", userId, "subjects", subject);
   const docSnap = await getDoc(subjectRef);
-  return docSnap.data();
+  return docSnap.data() || null;
 };
+
 const addSubject = async (subject: any) => {
   const userId = auth.currentUser?.uid || "";
   await setDoc(
@@ -111,10 +81,69 @@ const addSubject = async (subject: any) => {
     .catch((error) => console.log("Error Adding Subject", error));
 };
 
+const addOrDeleteEventTypeToSubject = async (
+  isDelete: boolean,
+  type: string,
+  times: any,
+  subject: string
+) => {
+  // Get Subject if it exists.
+  const subjectFromFirebase: any = await getSubject(subject);
+  if (!subjectFromFirebase) {
+    const dataSubject = {
+      events: {
+        [type]: {
+          averageTimeTook: times.timeActuallyTook,
+          averageEstimatedTimeTook: times.timeExpectedToSpend,
+        },
+      },
+      name: subject,
+    };
+    addSubject(dataSubject);
+  } else {
+    // If Type exists udpate values.
+    if (subjectFromFirebase.events[type]) {
+      const addAverage =
+        (subjectFromFirebase.events[type].averageTimeTook +
+          times.timeActuallyTook) /
+        2;
+
+      const removeAverage =
+        (subjectFromFirebase.events[type].averageTimeTook -
+          times.timeActuallyTook) *
+        2;
+
+      // Create type object with updated values from subject type.
+      const typeData = {
+        averageTimeTook: isDelete ? removeAverage : addAverage,
+        averageEstimatedTimeTook: isDelete ? removeAverage : addAverage,
+      };
+      subjectFromFirebase.events = {
+        ...subjectFromFirebase.events,
+        [type]: typeData,
+      };
+    }
+
+    if (!subjectFromFirebase.events[type] && !isDelete) {
+      const typeData = {
+        averageTimeTook: times.timeActuallyTook,
+        averageEstimatedTimeTook: times.timeExpectedToSpend,
+      };
+      subjectFromFirebase.events[type] = typeData;
+    }
+    updateSubject(subjectFromFirebase);
+  }
+};
+
+const updateSubject = async (subject: any) => {
+  const userId = auth.currentUser?.uid || "";
+
+  updateDoc(doc(db, "Users", userId, "subjects", subject.id), subject);
+};
 const addEvent = async (event: Event) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
-  updateSubject(event, "");
+  addOrDeleteEventTypeToSubject(false, event.type, event.times, event.subject);
   await setDoc(doc(eventsRef), event)
     .then((result) => console.log("Adding Event"))
     .catch((error) => console.log("Error Adding Event", error));
@@ -123,6 +152,7 @@ const addEvent = async (event: Event) => {
 const updateEvent = async (event: Event, id: string | undefined) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
+  addOrDeleteEventTypeToSubject(false, event.type, event.times, event.subject);
   await updateDoc(doc(eventsRef, id), event)
     .then((result) => console.log("Updated Event"))
     .catch((error) => console.log("Error Updating Event", error));
@@ -131,10 +161,10 @@ const updateEvent = async (event: Event, id: string | undefined) => {
 const deleteEvent = async (event: Event, id: string) => {
   const userId = auth.currentUser?.uid || "";
   const eventsRef = collection(db, "Users", userId, "events");
-
+  addOrDeleteEventTypeToSubject(true, event.type, event.times, event.subject);
   await deleteDoc(doc(eventsRef, id));
-  updateSubject(event, "deletion");
 };
+
 export {
   auth,
   db,

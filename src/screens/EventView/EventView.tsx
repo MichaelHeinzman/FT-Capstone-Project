@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Background from "../../components/Background";
 import Title from "../../components/Title";
 import { useGetUserSubjects } from "../../hooks/useGetUserSubjects";
@@ -16,7 +16,7 @@ const defaultEvent = {
   description: "Description",
   subject: "Subject of Event",
   type: "Type of Event in Subject",
-  color: "rgb(169,169,169)",
+  color: "rgba(169,169,169, .5)",
   recurring: {
     isRecurring: false,
     frequency: "never",
@@ -29,6 +29,7 @@ const defaultEvent = {
   },
   times: {
     timeExpectedToSpend: 0,
+    timeActuallyTook: 40,
   },
   alarm: {
     time: moment().format("MMMM D YYYY, h:mm A").toString().toString(),
@@ -46,13 +47,48 @@ const EventView = ({ navigation, route }: Props) => {
   const [editView, setEditView] = useState(false);
   const { currentDayPassed, eventToUpdate } = route.params;
   const [event, setNewEvent] = useState(eventToUpdate || defaultEvent);
-
   const submitNewEventToFirebase = () => {
-    event ? addEventToFirebase(event) : updateEventInFirebase(event, event.id);
+    const newEvent = {
+      id: event.id || null,
+      title: event.title || "No Title",
+      description: event.description || "No Description",
+      subject: event.subject || "No Subject",
+      type: event.type || "No Type",
+      color: event.color || "rgba(0,0,0)",
+      recurring: {
+        isRecurring: event.recurring.isRecurring || false,
+        frequency: event.recurring.frequency || "never",
+        every: event.recurring.every || "never",
+        end: event.recurring.end || "never",
+      },
+      dates: {
+        start:
+          event.dates.start ||
+          moment().format("MMMM D YYYY, h:mm A").toString().toString(),
+        end:
+          event.dates.start ||
+          moment().format("MMMM D YYYY, h:mm A").toString().toString(),
+      },
+      times: {
+        timeExpectedToSpend: event.times.timeExpectedToSpend || 0,
+        timeActuallyTook:
+          event.times.timeActuallyTook || defaultEvent.times.timeActuallyTook,
+      },
+      alarm: {
+        time:
+          event.alarm.time ||
+          moment().format("MMMM D YYYY, h:mm A").toString().toString(),
+        isOn: event.alarm.isOn || false,
+      },
+    };
+    event
+      ? addEventToFirebase(newEvent)
+      : updateEventInFirebase(newEvent, newEvent.id);
+
     !eventToUpdate
       ? navigation.navigate("Dashboard")
       : navigation.navigate("EventView", {
-          eventToUpdate: event,
+          eventToUpdate: newEvent,
           currentDayPassed: currentDayPassed,
         });
   };
@@ -66,7 +102,12 @@ const EventView = ({ navigation, route }: Props) => {
           <TouchableOpacity
             style={styles.backContainer}
             onPress={() => {
-              editView ? setEditView(false) : navigation.navigate("Dashboard");
+              if (editView) {
+                setNewEvent(eventToUpdate);
+                setEditView(false);
+              } else {
+                navigation.navigate("Dashboard");
+              }
             }}
           >
             <Text style={[styles.backText, { color: event.color }]}>
@@ -114,6 +155,7 @@ const EventView = ({ navigation, route }: Props) => {
               styles={styles}
               event={event}
               subjects={subjects}
+              navigation={navigation}
             />
           )
         ) : (

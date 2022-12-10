@@ -11,7 +11,7 @@ import { useFormatEventsForCalendar } from "../../hooks/useFormatEventsForCalend
 
 const datesWhitelist = [
   {
-    start: moment(),
+    start: moment().add(-2, "weeks"),
     end: moment().add(365, "days"), // total 4 days enabled
   },
 ];
@@ -23,7 +23,7 @@ type Props = {
 const Dashboard = ({ navigation }: Props) => {
   const { events } = useGetUserEvents();
   const [currentDate, setCurrentDate] = useState<any>(
-    moment().format("YYYY-MM-DD").toString()
+    moment().format("YYYY-MM-DD")
   );
   const { eventsForCalendar, dayList } = useFormatEventsForCalendar(
     events,

@@ -8,6 +8,7 @@ type Props = {
   secureTextEntry: boolean;
   value: string;
   error: null | string;
+  keyboardType?: any;
   onChangeEvent: (v: string) => void;
 };
 
@@ -18,10 +19,12 @@ const StyledTextInput = ({
   secureTextEntry,
   value,
   error,
+  keyboardType,
   onChangeEvent,
 }: Props) => {
   return (
     <TextInput
+      keyboardType={keyboardType}
       style={
         error
           ? [styles.input, givenStyles, styles.error]

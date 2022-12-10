@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { uuidv4 } from "@firebase/util";
-export function useGetTypesFromSubject(subjectTypes: any) {
+export function useGetTypesFromSubject(subject: any) {
   const [types, setTypes] = useState<any[]>([]);
 
   useEffect(() => {
-    if (subjectTypes) {
+    if (subject?.events) {
       const mappedTypes: any = [];
-      Object.keys(subjectTypes).map((key: string) => {
+      Object.keys(subject.events).map((key: string) => {
         mappedTypes.push({
           label: key,
           value: key,
@@ -15,7 +15,7 @@ export function useGetTypesFromSubject(subjectTypes: any) {
 
       setTypes(mappedTypes);
     }
-  }, []);
+  }, [subject]);
 
   return {
     types,

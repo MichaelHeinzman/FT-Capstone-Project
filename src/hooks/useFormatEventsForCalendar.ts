@@ -13,38 +13,53 @@ export function useFormatEventsForCalendar(events: any, currentDay: any) {
   };
 
   const handleNonRecurring = (result: any, event: Event) => {
+    // Get Difference between Start and End Dates.
     const diffBetweenStartAndEnd = moment(event.dates.end).diff(
       moment(event.dates.start),
       "days"
     );
+
+    // Store End Date for the last date to end on the correct time and not 12 am.
     let final = "";
+    // Check if difference is 0
+    if (diffBetweenStartAndEnd === 0) {
+      const startDate = moment(event.dates.start).format("YYYY-MM-DD");
+      if (!result[startDate]) result[startDate] = [];
+      return result[startDate].push(event);
+    }
+    // Loop through the difference of days and store the data in the result[date]. (Doesn't go backwards at the moment.)
     for (let i = 0; i < diffBetweenStartAndEnd; i++) {
-      const date = moment(event.dates.start).format("YYYY-MM-DD").toString();
-      if (i === diffBetweenStartAndEnd - 1) {
-        event.dates.end = final;
-      }
-      if (!result[date]) result[date] = [];
-      result[date].push(event);
-      result[date].sort((a: any, b: any) => {
+      // Store start date of event for that given day.
+      const startDate = moment(event.dates.start).format("YYYY-MM-DD");
+      const endDate = moment(event.dates.end).format("YYYY-MM-DD");
+      console.log("STARTDATE", startDate);
+
+      // If At the end of the loop, set the end date to the final date with correct time.
+      if (i === diffBetweenStartAndEnd - 1) event.dates.end = final;
+
+      // If result[date] doesn't exist, create a template to store event in.
+      if (!result[startDate]) result[startDate] = [];
+
+      // Push the event inside of result[date] and sort the times in order.
+      result[startDate].push(event);
+      result[startDate].sort((a: any, b: any) => {
         const date1 = new Date(a.dates.start);
         const date2 = new Date(b.dates.start);
         return date1.valueOf() - date2.valueOf();
       });
-      let start = event.dates.start;
-      let end = event.dates.end;
 
+      // If at the beginning of loop, store date end in final. And update start and end dates to go from 0 - 24 hours Each day.
       if (i === 0) {
         final = event.dates.end;
-        const date = moment(start).format("YYYY-MM-DD").toString();
-        start = date + " 00:00:00";
-        end = date + " 23:59:59";
+        event.dates.start = startDate + " 00:00:00";
+        event.dates.end = endDate + " 23:59:59";
       }
 
       event = {
         ...event,
         dates: {
-          start: moment(start).add(1, "days").toString(),
-          end: moment(end).add(1, "days").toString(),
+          start: moment(event.dates.start).add(1, "days").toString(),
+          end: moment(event.dates.end).add(1, "days").toString(),
         },
       };
     }
@@ -123,7 +138,6 @@ export function useFormatEventsForCalendar(events: any, currentDay: any) {
     return result;
   };
 
-  console.log(eventsForCalendar);
   useEffect(() => {
     let result: any = {};
     Object.keys(events).forEach((key: string) => {

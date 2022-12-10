@@ -9,20 +9,9 @@ type Props = {
   navigation: any;
 };
 
-const getTime = (event: EventType) => {
-  const start: any = moment(event.times.start).format("h:mm A");
-  const end: any = moment(event.times.end).format("h:mm A");
-  return (
-    <View style={styles.timeView}>
-      <Text style={styles.time}>{start}</Text>
-      <Text style={styles.time}>TO</Text>
-      <Text style={styles.time}>{end}</Text>
-    </View>
-  );
-};
-
 const Event = ({ event, navigation }: Props) => {
   const { subjects } = useGetUserSubjects();
+  const time = parseInt(moment(event.dates.start).format("mm")) / 60;
   return (
     <TouchableOpacity
       onPress={() =>
@@ -31,30 +20,22 @@ const Event = ({ event, navigation }: Props) => {
           eventToUpdate: event,
         })
       }
-      style={styles.container}
+      style={[styles.container]}
     >
-      <View style={styles.content}>
-        <Text style={styles.title}>{event.title}</Text>
-        <Text style={styles.subjectTitle}>
-          {subjects[event.subject]?.name || event?.subject}
-        </Text>
-        <Text style={styles.typeTitle}>{event.type}</Text>
-        <Text style={styles.text}>
-          Average Time:{" "}
-          {subjects[event.subject]?.events[event.type]?.averageTimeTook} min
-        </Text>
-        <Text style={styles.text}>
-          Time Set : {event.times.timeExpectedToSpend} min
-        </Text>
+      <View style={[styles.content]}>
+        <Text style={[styles.title]}>{event.title}</Text>
       </View>
       <View
         style={{
-          height: "80%",
-          width: "1%",
+          width: "100%",
+          height: "100%",
+          top: 0,
+          left: 0,
+          position: "absolute",
           backgroundColor: event.color,
-          borderRadius: 5,
+          opacity: 0.4,
         }}
-      />
+      ></View>
     </TouchableOpacity>
   );
 };
@@ -64,34 +45,29 @@ export default Event;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: "100%",
     width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "stretch",
-    borderRadius: 10,
-    shadowColor: "#2E66E7",
-    backgroundColor: "#ffffff",
-    paddingLeft: 10,
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
+    height: "100%",
     margin: 5,
+    position: "relative",
   },
 
   content: {
     flex: 1,
     width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
   title: {
-    color: "#554A4C",
-    fontSize: 20,
+    fontSize: 12,
     fontWeight: "800",
+    width: "100%",
+    color: "white",
+    textAlign: "center",
   },
   subjectTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "500",
   },
   typeTitle: {

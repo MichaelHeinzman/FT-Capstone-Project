@@ -15,20 +15,29 @@ type Props = {
 
 const TimeRows = ({ navigation, dayList, currentDay }: Props) => {
   const { timesInADay } = useTimesInADay(dayList);
+
+  // Renders each row with time in hours in a day.
   const renderTimeRows = () =>
     Object.keys(timesInADay).map((key: any) => (
-      <View key={uuid.v4().toString()} style={styles.row}>
-        <View style={styles.timeContainer}>
-          <Text style={styles.time}>{moment().hours(key).format("h A")}</Text>
+      <View key={uuid.v4().toString()} style={styles.container}>
+        <View style={styles.row}>
+          <View style={styles.timeContainer}>
+            <Text style={styles.time}>{moment().hours(key).format("h A")}</Text>
+          </View>
+          <View style={styles.divider}></View>
         </View>
-        <View style={styles.events}>
-          {timesInADay[key].length > 0 && (
-            <Events
-              events={timesInADay[key]}
-              navigation={navigation}
-              currentDay={currentDay}
-            />
-          )}
+
+        <View style={styles.row}>
+          <View style={styles.timeContainer}></View>
+          <View style={styles.events}>
+            {timesInADay[key].length > 0 && (
+              <Events
+                events={timesInADay[key]}
+                navigation={navigation}
+                currentDay={currentDay}
+              />
+            )}
+          </View>
         </View>
       </View>
     ));
@@ -47,34 +56,41 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     margin: 10,
   },
-  row: {
+  container: {
     flex: 1,
-    height: "100%",
     width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  row: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "flex-start",
-    margin: 10,
-    backgroundColor: "rgba(244,244,244,.1)",
-    padding: 10,
+    alignItems: "center",
   },
   timeContainer: {
-    flex: 0.3,
+    flex: 0.15,
     height: "100%",
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-end",
+    padding: 5,
   },
   time: {
     color: "white",
-    fontSize: 20,
+    fontSize: 16,
   },
   events: {
-    flex: 0.7,
+    flex: 0.8,
+    height: "100%",
     display: "flex",
-    flexWrap: "wrap",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
+  },
+  divider: {
+    flex: 1,
+    backgroundColor: "white",
+    height: 1,
   },
 });

@@ -58,6 +58,7 @@ export type Event = {
   };
   color: string;
   dates: { start: string; end: string };
-  times: { timeExpectedToSpend: number };
+  times: { timeExpectedToSpend: number; timeActuallyTook: number };
   alarm: { time: string; isOn: boolean };
+  completed?: boolean;
 };

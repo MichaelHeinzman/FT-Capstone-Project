@@ -6,6 +6,7 @@ import { Timestamp } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { useTimesInADay } from "../../../hooks/useTimesInADay";
 import { Event as EventType } from "../../../types";
+import { useGetSortedByTimesEvents } from "../../../hooks/useGetSortedByTimeEvents";
 
 type Props = {
   navigation: any;
@@ -14,9 +15,11 @@ type Props = {
 };
 
 const Events = ({ navigation, events, currentDay }: Props) => {
+  const { sortedEvents } = useGetSortedByTimesEvents(events, currentDay);
+
   return (
     <>
-      {events.map((event: EventType) => {
+      {sortedEvents.map((event: EventType) => {
         return (
           <EventComponent
             key={event.id}

@@ -1,9 +1,7 @@
 import { onSnapshot, collection, doc } from "firebase/firestore";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { auth } from "../firebase";
-import { Event } from "../types";
 
 export function useGetUserEvents() {
   const [events, setEvents] = useState<any>({});
@@ -15,14 +13,19 @@ export function useGetUserEvents() {
       (querySnapshot) => {
         let result: any = {};
         querySnapshot.forEach((doc) => {
-          const temp: any = { id: doc.id, ...doc.data() };
-          result = { ...result, [temp.id]: temp };
+          const temp: any = { ...doc.data() };
+          if (!temp?.completed) {
+            temp.id = doc.id;
+
+            result = { ...result, [doc.id]: temp };
+          }
         });
         setEvents(result);
       }
     );
     return unsubscribe;
   }, []);
+
   return {
     events,
   };
