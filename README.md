@@ -17,4 +17,4 @@ https://expo.dev/@michaelheinzman/FT?serviceType=classic&distribution=expo-go
 ## Extra
 I haven't had time to setup full types and checking of data. There are a lot of bugs and a lot of features that I want to add in the future. Definitely would have done this differently now that I've completed the main features. I think I would start over just to see how it would turn out since I learned so much about building calendars and coding in typescript by doing this project.  DEFINITELY  looking at Apple's calendar and Google's and have gained so much respect for the quality of build they have. 
 
-(Will add more).  
+
