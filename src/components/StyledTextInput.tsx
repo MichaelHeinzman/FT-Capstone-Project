@@ -24,8 +24,8 @@ const StyledTextInput = ({
     <TextInput
       style={
         error
-          ? [givenStyles, styles.input, styles.error]
-          : [givenStyles, styles.input]
+          ? [styles.input, givenStyles, styles.error]
+          : [styles.input, givenStyles]
       }
       placeholder={placeholder}
       placeholderTextColor={placeholderTextColor}

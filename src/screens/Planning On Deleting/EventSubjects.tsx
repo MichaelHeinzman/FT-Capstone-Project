@@ -1,13 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { Fragment, useEffect, useState } from "react";
-import { useGetUserSubjects } from "../../../hooks/useGetUserSubjects";
+import { useGetUserSubjects } from "../../hooks/useGetUserSubjects";
 import DropDownPicker from "react-native-dropdown-picker";
-import StyledButton from "../../../components/StyledButton";
-import StyledTextInput from "../../../components/StyledTextInput";
-import { addSubject } from "../../../firebase";
+import StyledButton from "../../components/StyledButton";
+import StyledTextInput from "../../components/StyledTextInput";
+import { addSubject } from "../../firebase";
 import { useLinkBuilder } from "@react-navigation/native";
 import { uuidv4 } from "@firebase/util";
-import { useGetItemsFromSubjects } from "../../../hooks/useGetItemsFromSubjects";
+import { useGetItemsFromSubjects } from "../../hooks/useGetItemsFromSubjects";
 type Props = {
   setSubject: React.Dispatch<any>;
 };

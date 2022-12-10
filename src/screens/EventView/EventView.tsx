@@ -1,7 +1,40 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Background from "../../components/Background";
 import Title from "../../components/Title";
+import { useGetUserSubjects } from "../../hooks/useGetUserSubjects";
+import EventContentView from "./Components/EventContentView";
+import EventEditView from "./Components/EventEditAddView";
+import {
+  updateEvent as updateEventInFirebase,
+  addEvent as addEventToFirebase,
+} from "../../firebase";
+import moment from "moment";
+
+const defaultEvent = {
+  title: "Title Of Event",
+  description: "Description",
+  subject: "Subject of Event",
+  type: "Type of Event in Subject",
+  color: "rgb(169,169,169)",
+  recurring: {
+    isRecurring: false,
+    frequency: "never",
+    every: "never",
+    end: "never",
+  },
+  dates: {
+    start: moment().format("MMMM D YYYY, h:mm A").toString().toString(),
+    end: moment().format("MMMM D YYYY, h:mm A").toString().toString(),
+  },
+  times: {
+    timeExpectedToSpend: 0,
+  },
+  alarm: {
+    time: moment().format("MMMM D YYYY, h:mm A").toString().toString(),
+    isOn: false,
+  },
+};
 
 type Props = {
   navigation: any;
@@ -9,7 +42,21 @@ type Props = {
 };
 
 const EventView = ({ navigation, route }: Props) => {
-  const { currentDayPassed, eventToUpdate: event } = route.params;
+  const { subjects } = useGetUserSubjects();
+  const [editView, setEditView] = useState(false);
+  const { currentDayPassed, eventToUpdate } = route.params;
+  const [event, setNewEvent] = useState(eventToUpdate || defaultEvent);
+
+  const submitNewEventToFirebase = () => {
+    event ? addEventToFirebase(event) : updateEventInFirebase(event, event.id);
+    !eventToUpdate
+      ? navigation.navigate("Dashboard")
+      : navigation.navigate("EventView", {
+          eventToUpdate: event,
+          currentDayPassed: currentDayPassed,
+        });
+  };
+
   return (
     <View style={styles.container}>
       <Background />
@@ -18,82 +65,65 @@ const EventView = ({ navigation, route }: Props) => {
           {/* Back button. */}
           <TouchableOpacity
             style={styles.backContainer}
-            onPress={() => navigation.navigate("Dashboard")}
+            onPress={() => {
+              editView ? setEditView(false) : navigation.navigate("Dashboard");
+            }}
           >
-            <Text style={[styles.backText, { color: event.color }]}>Back</Text>
+            <Text style={[styles.backText, { color: event.color }]}>
+              {editView ? "Cancel" : "Back"}
+            </Text>
           </TouchableOpacity>
 
           {/* Header title explaining what this component is. */}
-          <Text style={styles.headerText}>Event Details</Text>
+          <Text style={styles.headerText}>
+            {eventToUpdate
+              ? editView
+                ? "Event Edit"
+                : "Event Details"
+              : "Add Event"}
+          </Text>
 
           {/* Edit button. */}
           <TouchableOpacity
             style={styles.backContainer}
-            onPress={() =>
-              navigation.navigate("EventForm", {
-                currentDayPassed: currentDayPassed,
-                eventToUpdate: event,
-              })
-            }
+            onPress={() => {
+              eventToUpdate
+                ? editView
+                  ? submitNewEventToFirebase()
+                  : setEditView(true)
+                : submitNewEventToFirebase();
+            }}
           >
-            <Text style={[styles.backText, { color: event.color }]}>Edit</Text>
+            <Text style={[styles.backText, { color: event.color }]}>
+              {eventToUpdate ? (editView ? "Save" : "Edit") : "Add"}
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* Actual details of the Event. */}
-        <View style={styles.content}>
-          {/* Title of Event */}
-          <Text style={[styles.title]}>
-            {event.title ? event.title : "No Title"}
-          </Text>
-
-          {/* Event Subject and Type */}
-          <View style={styles.row}>
-            {/* Event Subject */}
-            <View
-              style={{
-                backgroundColor: event.color,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 10,
-                padding: 10,
-                margin: 5,
-                marginLeft: 0,
-              }}
-            >
-              <Text style={styles.subjectText}>
-                {event.subject ? event.subject : "No Subject"}
-              </Text>
-            </View>
-
-            {/* Event Type */}
-            <View
-              style={{
-                backgroundColor: event.color,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 10,
-                padding: 10,
-                margin: 5,
-              }}
-            >
-              <Text style={styles.typeText}>
-                {event.type ? event.type : "No Type"}
-              </Text>
-            </View>
-          </View>
-
-          <Text style={styles.text}>
-            Time Expected To Take: {event.times.timeExpectedToTake}
-          </Text>
-        </View>
-
-        {/* Finished button. */}
-        <TouchableOpacity style={styles.backContainer} onPress={() => {}}>
-          <Text style={styles.backText}>Mark As Finished</Text>
-        </TouchableOpacity>
+        {eventToUpdate ? (
+          editView ? (
+            <EventEditView
+              event={event}
+              oldEvent={eventToUpdate}
+              setEvent={setNewEvent}
+              stylesSent={styles}
+            />
+          ) : (
+            <EventContentView
+              styles={styles}
+              event={event}
+              subjects={subjects}
+            />
+          )
+        ) : (
+          <EventEditView
+            event={event}
+            oldEvent={defaultEvent}
+            setEvent={setNewEvent}
+            stylesSent={styles}
+          />
+        )}
       </View>
     </View>
   );
@@ -105,6 +135,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
+    position: "relative",
   },
   actualContainer: {
     flex: 1,
@@ -113,10 +144,18 @@ const styles = StyleSheet.create({
   },
   row: {
     width: "100%",
+    maxWidth: "100%",
     display: "flex",
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "flex-start",
     alignItems: "center",
+    margin: 1,
+    padding: 5,
+  },
+  rowItem: {
+    width: "100%",
+    display: "flex",
   },
   header: {
     flex: 0.1,
@@ -139,7 +178,7 @@ const styles = StyleSheet.create({
     color: "aqua",
   },
   backContainer: {
-    flex: 0.2,
+    flex: 0.3,
     width: "100%",
   },
 
@@ -151,7 +190,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   title: {
-    flex: 0.1,
     fontSize: 20,
     color: "white",
     fontWeight: "700",
@@ -167,7 +205,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   text: {
-    flex: 0.1,
     fontSize: 14,
     color: "white",
   },

@@ -32,8 +32,8 @@ export function useTimesInADay(dayList: any) {
     };
 
     const storeInEachTime = (event: any) => {
-      const eventStartTime = moment(event.times.start).hours();
-      const eventEndTime = moment(event.times.end).hours();
+      const eventStartTime = moment(event.dates.start).hours();
+      const eventEndTime = moment(event.dates.end).hours();
       Object.keys(newTimesInADay).map((key: any) => {
         if (eventStartTime <= parseInt(key) && eventEndTime >= parseInt(key))
           newTimesInADay[key].push(event);

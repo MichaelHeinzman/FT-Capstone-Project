@@ -7,6 +7,7 @@ import Background from "../../components/Background";
 import { useGetUserEvents } from "../../hooks/useGetUserEvents";
 import { useMarkedDates } from "../../hooks/useMarkedDates";
 import TimeRows from "./Components/TimeRows";
+import { useFormatEventsForCalendar } from "../../hooks/useFormatEventsForCalendar";
 
 const datesWhitelist = [
   {
@@ -21,20 +22,19 @@ type Props = {
 
 const Dashboard = ({ navigation }: Props) => {
   const { events } = useGetUserEvents();
-  const { markedDates } = useMarkedDates(events);
-  const [dayList, setDayList] = useState([]);
   const [currentDate, setCurrentDate] = useState<any>(
     moment().format("YYYY-MM-DD").toString()
   );
+  const { eventsForCalendar, dayList } = useFormatEventsForCalendar(
+    events,
+    currentDate
+  );
+  const { markedDates } = useMarkedDates(eventsForCalendar);
 
   const onDateSelected = (date: any) => {
     const selected = moment(date).format("YYYY-MM-DD").toString();
     setCurrentDate(selected);
   };
-
-  useEffect(() => {
-    setDayList(events[currentDate.toString()]);
-  }, [events, currentDate]);
 
   return (
     <Fragment>
@@ -77,7 +77,7 @@ const Dashboard = ({ navigation }: Props) => {
         {/* Add Event Button */}
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("EventForm", {
+            navigation.navigate("EventView", {
               currentDayPassed: currentDate,
             })
           }
