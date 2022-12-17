@@ -14,10 +14,16 @@ const NavigationBar = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => handleNavButtonClicked("Dashboard")}>
+      <TouchableOpacity onPress={() => handleNavButtonClicked("Agenda")}>
         <Image
           style={styles.image}
           source={require("../assets/images/dashboard.png")}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleNavButtonClicked("Dashboard")}>
+        <Image
+          style={styles.image}
+          source={require("../assets/images/calendar.png")}
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavButtonClicked("Settings")}>

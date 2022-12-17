@@ -28,6 +28,7 @@ export type RootStackParamList = {
   NotFound: undefined;
   EventForm: undefined;
   EventView: undefined;
+  Agenda: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
@@ -53,7 +54,7 @@ export type Event = {
   recurring: {
     isRecurring: boolean;
     frequency: string;
-    every: string;
+    every: any;
     end: string;
   };
   color: string;

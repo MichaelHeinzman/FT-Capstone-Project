@@ -7,11 +7,10 @@ import { Event as EventType } from "../../../types";
 type Props = {
   event: EventType;
   navigation: any;
+  time: boolean;
 };
 
-const Event = ({ event, navigation }: Props) => {
-  const { subjects } = useGetUserSubjects();
-  const time = parseInt(moment(event.dates.start).format("mm")) / 60;
+const Event = ({ event, navigation, time }: Props) => {
   return (
     <TouchableOpacity
       onPress={() =>
@@ -22,6 +21,13 @@ const Event = ({ event, navigation }: Props) => {
       }
       style={[styles.container]}
     >
+      {time && (
+        <Text style={[styles.time]}>
+          {moment(event.dates.start).format("h:m A")}-
+          {moment(event.dates.end).format("h:m A")}
+        </Text>
+      )}
+
       <View style={[styles.content]}>
         <Text style={[styles.title]}>{event.title}</Text>
       </View>
@@ -47,10 +53,13 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
     margin: 5,
     position: "relative",
   },
-
   content: {
     flex: 1,
     width: "100%",

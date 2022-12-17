@@ -13,7 +13,7 @@ import moment from "moment";
 
 const defaultEvent = {
   title: "Title Of Event",
-  description: "Description",
+  description: "",
   subject: "Subject of Event",
   type: "Type of Event in Subject",
   color: "rgba(169,169,169, .5)",

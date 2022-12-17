@@ -7,14 +7,15 @@ import uuid from "react-native-uuid";
 import { useTimesInADay } from "../../../hooks/useTimesInADay";
 import { Event as EventType } from "../../../types";
 import { useGetSortedByTimesEvents } from "../../../hooks/useGetSortedByTimeEvents";
-
+import { uuidv4 } from "@firebase/util";
 type Props = {
   navigation: any;
   events: EventType[];
   currentDay: any;
+  time: boolean;
 };
 
-const Events = ({ navigation, events, currentDay }: Props) => {
+const Events = ({ navigation, events, currentDay, time }: Props) => {
   const { sortedEvents } = useGetSortedByTimesEvents(events, currentDay);
 
   return (
@@ -22,9 +23,10 @@ const Events = ({ navigation, events, currentDay }: Props) => {
       {sortedEvents.map((event: EventType) => {
         return (
           <EventComponent
-            key={event.id}
+            key={event.id + uuidv4()}
             event={event}
             navigation={navigation}
+            time={time}
           />
         );
       })}

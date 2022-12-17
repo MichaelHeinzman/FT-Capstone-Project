@@ -1,8 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import Event from "./Event";
 import moment from "moment";
-import { Timestamp } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { useTimesInADay } from "../../../hooks/useTimesInADay";
 import Events from "./Events";
@@ -35,6 +32,7 @@ const TimeRows = ({ navigation, dayList, currentDay }: Props) => {
                 events={timesInADay[key]}
                 navigation={navigation}
                 currentDay={currentDay}
+                time={false}
               />
             )}
           </View>

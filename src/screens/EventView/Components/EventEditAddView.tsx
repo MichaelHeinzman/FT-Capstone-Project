@@ -148,10 +148,8 @@ const EventEditAddView = ({ event, stylesSent, setEvent, oldEvent }: Props) => {
           <View style={stylesSent.row}>
             <StyledTextInput
               placeholderTextColor={event.color}
-              value={
-                event.description === "" ? "Description" : event.description
-              }
-              placeholder={event.description}
+              value={event.description}
+              placeholder={"Description"}
               onChangeEvent={(v) => updateEvent("description", v)}
               secureTextEntry={false}
               error={null}
