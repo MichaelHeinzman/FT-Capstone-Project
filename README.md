@@ -1,6 +1,6 @@
 # FT CAPSTONE PROJECT 
 This is my 2022 Fall Capstone Project. It's a calendar / time management React Native app.   
-You can view the full documentation / report here: 
+You can view the full documentation / report by clicking the link below.
 https://github.com/MichaelHeinzman/FT/blob/main/FT%20Capstone%20Project%20(Final%20Draft).docx%20(1).pdf
 
 
