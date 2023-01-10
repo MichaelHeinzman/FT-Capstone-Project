@@ -11,7 +11,9 @@ https://github.com/MichaelHeinzman/FT/blob/main/FT%20Capstone%20Project%20(Final
   Language : **Typescript**     
   Library : **React Native**      
   Database : **Firestore**    
-  Authentication Service : **Firebase**     
+  Authentication Service : **Firebase**
+  Design Tool : **Figma**
+  
 ## Tryout App   
 To view project go to this link and download the expo go app  
 https://expo.dev/@michaelheinzman/FT?serviceType=classic&distribution=expo-go   
